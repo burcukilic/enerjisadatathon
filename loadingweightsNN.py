@@ -1,27 +1,7 @@
 import pandas as pd
 import numpy as np
 import math
-'''
-df = pd.read_csv('temperature2.csv',delimiter=',',decimal='.')
-df2 = pd.read_csv('temperature.csv',delimiter=';',decimal=',')
-df2 = df2[df2['DateTime'].notna()]
-df2 = df2.reset_index(drop=True)
-df2 = df2.drop('DateTime', axis = 1)
-df2['WWCode'] = df2['WWCode'].fillna(6)
-df['WWCode'] = df['WWCode'].fillna(6)
 
-import math
-df['DayLength']=[9+(6* math.sin(math.radians(((i+264)%8760)/48.6666))) for i in range(26304)]
-#df['Tomorrow']=[50 if i == 26303 else df['EffectiveCloudCover'][i+1] for i in range(26304)]
-#df['HumidityTomorrow']=[50 if i ==26303 else df['RelativeHumidity'][i+1] for i in range(26304)]
-#df['TemperatureTomorrow'] = [0 if i == 26303 else df['AirTemperature'][i+1] for i in range(26304)]
-df['WWCode'] = df2['WWCode']
-df['AirTemperature'] = df2['AirTemperature']
-df['ComfortTemperature'] = df2['ComfortTemperature']
-df['WindSpeed'] = df2['WindSpeed']
-df['WindDirection'] = df2['WindDirection']
-df['EffectiveCloudCover'] = df2['EffectiveCloudCover']
-'''
 
 df = pd.read_csv('temperature.csv',delimiter=";",decimal=",")
 data = pd.read_csv('temperature2.csv')
@@ -44,18 +24,11 @@ df['Month']=[(i//730)%12 for i in range(26304)]
 df['Zenith'] = data['Zenith']
 df['cloud'] = data['Cloudopacity']
 df['GHI'] = data['GHI']
-#df['EBH'] = data['EBH']
-#df['Albedo']=data['AlbedoDaily']
-#df['Azimuth'] =data['Azimuth']
-#df['DNI']=data['DNI']
-#df['DHI']=data['DHI']
+
 
 df['Day']=[(i//24) for i in range(26304)]
 df['DayLength']=[9+(6* math.sin(math.radians(((i+264)%8760)/48.6666))) for i in range(26304)]
-#df['Tomorrow']=[50 if i == 26303 else df['EffectiveCloudCover'][i+1] for i in range(26304)]
-#df['HumidityTomorrow']=[50 if i ==26303 else df['RelativeHumidity'][i+1] for i in range(26304)]
-#df['Humidityx2']=[50 if i>26301 else df['RelativeHumidity'][i+2] for i  in range(26304)]
-#df['TemperatureTomorrow']=[0 if i==26303 else df['AirTemperature'][i+1] for i in range(26304)]
+
 df['CloudPrev'] = [0 if i == 0 else data['Cloudopacity'][i-1] for i in range(26304)]
 df['DewPointprev'] = [0 if i == 0 else data['DewPoint'][i-1] for i in range(26304)]
 df['winddir2'] = [math.cos(math.radians(df['WindDirection'][i])) for i in range(26304)]
@@ -83,8 +56,8 @@ from tensorflow import keras
 from keras.callbacks import ModelCheckpoint
 
 model = Sequential()
-model.add(LSTM(32, activation='relu', input_shape=(features.shape[1], features.shape[2])))
-#model.add(Dense(8, activation='relu'))
+model.add(Dense(32, activation='relu', input_shape=(features.shape[1], features.shape[2])))
+model.add(Dense(8, activation='relu'))
 
 
 model.add(Dense(1,activation='linear'))
